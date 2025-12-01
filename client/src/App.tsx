@@ -8,6 +8,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import CourseDetail from "@/pages/CourseDetail";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
+import AIAgentDetail from "@/pages/AIAgentDetail";
+import ProductDetail from "@/pages/ProductDetail";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/products/:id" component={ProductDetail} />
+      <Route path="/ai-agents/:id" component={AIAgentDetail} />
       <Route path="/courses/:id" component={CourseDetail} />
       <Route path="/case-studies/:id" component={CaseStudyDetail} />
       <Route path="/admin" component={Admin} />

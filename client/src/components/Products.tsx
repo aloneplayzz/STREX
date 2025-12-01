@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -139,14 +140,16 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </div>
 
           {/* Action */}
-          <Button
-            variant="ghost"
-            className="w-full mt-2 group/btn"
-            data-testid={`button-view-product-${product.id}`}
-          >
-            Learn More
-            <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-          </Button>
+          <Link href={`/products/${product.id}`}>
+            <Button
+              variant="ghost"
+              className="w-full mt-2 group/btn"
+              data-testid={`button-view-product-${product.id}`}
+            >
+              Learn More
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </Card>
     </motion.div>
