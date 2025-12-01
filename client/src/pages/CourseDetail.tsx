@@ -6,6 +6,63 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCourses } from "@/hooks/useLocalStorage";
 
+const defaultCourses = [
+  {
+    id: "course-1",
+    title: "Complete Web Development Bootcamp",
+    description: "From zero to full-stack developer. Master HTML, CSS, JavaScript, React, Node.js, and databases.",
+    price: "299",
+    category: "course",
+    icon: "Code2",
+    features: ["60+ hours", "Beginner", "Certificate", "Projects"],
+  },
+  {
+    id: "course-2",
+    title: "Advanced React & Next.js",
+    description: "Build production-ready applications with React 18, Next.js 14, and modern best practices.",
+    price: "199",
+    category: "course",
+    icon: "Globe",
+    features: ["40+ hours", "Advanced", "Live coding", "Real projects"],
+  },
+  {
+    id: "course-3",
+    title: "Backend Mastery with Node.js",
+    description: "Create scalable APIs, work with databases, implement authentication, and deploy to cloud.",
+    price: "179",
+    category: "course",
+    icon: "Server",
+    features: ["35+ hours", "Intermediate", "REST & GraphQL", "AWS/GCP"],
+  },
+  {
+    id: "course-4",
+    title: "UI/UX Design Fundamentals",
+    description: "Learn design principles, Figma, prototyping, and create stunning user interfaces.",
+    price: "149",
+    category: "course",
+    icon: "Palette",
+    features: ["25+ hours", "Beginner", "Figma files", "Portfolio"],
+  },
+  {
+    id: "course-5",
+    title: "Mobile App Development",
+    description: "Build cross-platform mobile apps with React Native and Flutter from scratch.",
+    price: "249",
+    category: "course",
+    icon: "Smartphone",
+    features: ["45+ hours", "Intermediate", "iOS & Android", "Publishing"],
+  },
+  {
+    id: "course-6",
+    title: "AI & Machine Learning for Developers",
+    description: "Integrate AI into your applications. Learn ML basics, APIs, and build intelligent features.",
+    price: "229",
+    category: "course",
+    icon: "GraduationCap",
+    features: ["30+ hours", "Intermediate", "OpenAI/Claude", "Projects"],
+  },
+];
+
 const iconMap: Record<string, any> = {
   Code2,
   Server,
@@ -18,9 +75,10 @@ const iconMap: Record<string, any> = {
 export default function CourseDetail() {
   const params = useParams();
   const courseId = params?.id;
-  const { courses } = useCourses();
+  const { courses: dbCourses } = useCourses();
+  const allCourses = (dbCourses && dbCourses.length > 0) ? [...defaultCourses, ...dbCourses] : defaultCourses;
 
-  const course = courses?.find(c => c.id === courseId);
+  const course = allCourses?.find(c => c.id === courseId);
 
   if (!course) {
     return (

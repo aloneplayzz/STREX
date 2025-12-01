@@ -6,12 +6,42 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCaseStudies } from "@/hooks/useLocalStorage";
 
+const defaultCaseStudies = [
+  {
+    id: "1",
+    title: "E-Commerce Platform Redesign",
+    slug: "ecommerce-platform-redesign",
+    client: "TechCart Inc",
+    industry: "E-Commerce",
+    challenge: "Their existing platform had high bounce rates and poor mobile experience.",
+    solution: "We redesigned the entire platform with modern UX, optimized performance, and mobile-first approach.",
+    results: "45% increase in conversion rate, 60% reduction in bounce rate.",
+    coverImage: null,
+    featured: true,
+    createdAt: new Date(),
+  },
+  {
+    id: "2",
+    title: "Digital Transformation for Healthcare Provider",
+    slug: "healthcare-digital-transformation",
+    client: "MedCare Plus",
+    industry: "Healthcare",
+    challenge: "Legacy systems were causing delays in patient data access and appointment scheduling.",
+    solution: "Built a modern web platform with real-time data sync and automated scheduling.",
+    results: "75% faster patient processing, 90% reduction in scheduling conflicts.",
+    coverImage: null,
+    featured: true,
+    createdAt: new Date(),
+  },
+];
+
 export default function CaseStudyDetail() {
   const params = useParams();
   const studyId = params?.id;
-  const { studies } = useCaseStudies();
+  const { studies: dbStudies } = useCaseStudies();
+  const allStudies = (dbStudies && dbStudies.length > 0) ? [...defaultCaseStudies, ...dbStudies] : defaultCaseStudies;
 
-  const study = studies?.find(s => s.id === studyId);
+  const study = allStudies?.find(s => s.id === studyId);
 
   if (!study) {
     return (
