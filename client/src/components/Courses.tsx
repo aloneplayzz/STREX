@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,22 @@ import {
   Star,
   PlayCircle,
 } from "lucide-react";
-import type { Product } from "@shared/schema";
 
-const courses: Product[] = [
+interface CourseItem {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  category: "course";
+  icon: string;
+  features: string[];
+  price: string;
+}
+
+const courses: CourseItem[] = [
   {
     id: "course-1",
+    slug: "complete-web-development-bootcamp",
     title: "Complete Web Development Bootcamp",
     description: "From zero to full-stack developer. Master HTML, CSS, JavaScript, React, Node.js, and databases.",
     category: "course",
@@ -30,6 +42,7 @@ const courses: Product[] = [
   },
   {
     id: "course-2",
+    slug: "advanced-react-nextjs",
     title: "Advanced React & Next.js",
     description: "Build production-ready applications with React 18, Next.js 14, and modern best practices.",
     category: "course",
@@ -39,6 +52,7 @@ const courses: Product[] = [
   },
   {
     id: "course-3",
+    slug: "backend-mastery-nodejs",
     title: "Backend Mastery with Node.js",
     description: "Create scalable APIs, work with databases, implement authentication, and deploy to cloud.",
     category: "course",
@@ -48,6 +62,7 @@ const courses: Product[] = [
   },
   {
     id: "course-4",
+    slug: "uiux-design-fundamentals",
     title: "UI/UX Design Fundamentals",
     description: "Learn design principles, Figma, prototyping, and create stunning user interfaces.",
     category: "course",
@@ -57,6 +72,7 @@ const courses: Product[] = [
   },
   {
     id: "course-5",
+    slug: "mobile-app-development",
     title: "Mobile App Development",
     description: "Build cross-platform mobile apps with React Native and Flutter from scratch.",
     category: "course",
@@ -66,6 +82,7 @@ const courses: Product[] = [
   },
   {
     id: "course-6",
+    slug: "ai-machine-learning-developers",
     title: "AI & Machine Learning for Developers",
     description: "Integrate AI into your applications. Learn ML basics, APIs, and build intelligent features.",
     category: "course",
@@ -84,7 +101,7 @@ const iconMap: Record<string, any> = {
   GraduationCap,
 };
 
-function CourseCard({ course, index }: { course: Product; index: number }) {
+function CourseCard({ course, index }: { course: CourseItem; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const Icon = iconMap[course.icon] || GraduationCap;
@@ -146,15 +163,17 @@ function CourseCard({ course, index }: { course: Product; index: number }) {
             <span className="font-display font-bold text-xl text-purple">
               {course.price}
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="group/btn hover:text-purple"
-              data-testid={`button-enroll-${course.id}`}
-            >
-              Enroll Now
-              <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-            </Button>
+            <Link href={`/courses/${course.slug}`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="group/btn hover:text-purple"
+                data-testid={`button-enroll-${course.id}`}
+              >
+                View Course
+                <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
       </Card>

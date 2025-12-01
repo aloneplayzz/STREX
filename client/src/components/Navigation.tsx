@@ -9,6 +9,7 @@ const navLinks = [
   { href: "#ai-agents", label: "AI Agents" },
   { href: "#courses", label: "Courses" },
   { href: "#founders", label: "Team" },
+  { href: "/blog", label: "Blog", isRoute: true },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -62,14 +63,28 @@ export function Navigation() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => scrollToSection(link.href)}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-md hover-elevate"
-                  data-testid={`link-nav-${link.label.toLowerCase()}`}
-                >
-                  {link.label}
-                </button>
+                link.isRoute ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                  >
+                    <span 
+                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-md hover-elevate cursor-pointer"
+                      data-testid={`link-nav-${link.label.toLowerCase()}`}
+                    >
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-md hover-elevate"
+                    data-testid={`link-nav-${link.label.toLowerCase()}`}
+                  >
+                    {link.label}
+                  </button>
+                )
               ))}
             </div>
 
@@ -115,14 +130,29 @@ export function Navigation() {
           >
             <div className="px-6 py-4 space-y-1">
               {navLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => scrollToSection(link.href)}
-                  className="block w-full text-left px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-md transition-colors duration-200"
-                  data-testid={`link-mobile-${link.label.toLowerCase()}`}
-                >
-                  {link.label}
-                </button>
+                link.isRoute ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span 
+                      className="block w-full text-left px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-md transition-colors duration-200 cursor-pointer"
+                      data-testid={`link-mobile-${link.label.toLowerCase()}`}
+                    >
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className="block w-full text-left px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-md transition-colors duration-200"
+                    data-testid={`link-mobile-${link.label.toLowerCase()}`}
+                  >
+                    {link.label}
+                  </button>
+                )
               ))}
               <div className="pt-3">
                 <Button

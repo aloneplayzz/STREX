@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,6 +9,7 @@ import {
   Youtube,
   Mail,
   ArrowRight,
+  Settings,
 } from "lucide-react";
 
 const footerLinks = {
@@ -201,6 +203,13 @@ export function Footer() {
             <span>Built with</span>
             <span className="text-red-500">&#x2764;</span>
             <span>by Ruthvesh, Thigazh & Surya</span>
+            <span className="text-muted-foreground/50">|</span>
+            <Link href="/admin">
+              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer" data-testid="link-admin">
+                <Settings className="w-3 h-3" />
+                Admin
+              </span>
+            </Link>
           </div>
         </div>
       </div>
