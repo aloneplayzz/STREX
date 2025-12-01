@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth, useLogout } from "@/hooks/useAuth";
 import {
   Zap,
   Twitter,
@@ -10,6 +11,7 @@ import {
   Mail,
   ArrowRight,
   Settings,
+  LogOut,
 } from "lucide-react";
 
 const footerLinks = {
@@ -47,6 +49,9 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { isAuthenticated } = useAuth();
+  const logout = useLogout();
+
   const scrollToSection = (href: string) => {
     if (href.startsWith("#")) {
       const element = document.querySelector(href);
@@ -204,12 +209,31 @@ export function Footer() {
             <span className="text-red-500">&#x2764;</span>
             <span>by Ruthvesh, Thigazh & Surya</span>
             <span className="text-muted-foreground/50">|</span>
-            <Link href="/admin">
-              <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer" data-testid="link-admin">
-                <Settings className="w-3 h-3" />
-                Admin
-              </span>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link href="/admin">
+                  <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer" data-testid="link-admin">
+                    <Settings className="w-3 h-3" />
+                    Admin
+                  </span>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                  data-testid="button-logout"
+                >
+                  <LogOut className="w-3 h-3" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link href="/login">
+                <span className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer" data-testid="link-login">
+                  <Settings className="w-3 h-3" />
+                  Admin Login
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       </div>

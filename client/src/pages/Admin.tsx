@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, useLogout } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   LayoutDashboard,
@@ -30,6 +30,7 @@ import {
   BarChart3,
   Clock,
   CheckCircle2,
+  LogOut,
 } from "lucide-react";
 import type { 
   Contact, 
@@ -770,6 +771,7 @@ function OverviewTab() {
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const { user, isLoading, isAuthenticated, isAdmin } = useAuth();
+  const logout = useLogout();
 
   const tabs = [
     { id: "overview" as const, label: "Overview", icon: LayoutDashboard },
@@ -847,6 +849,16 @@ export default function Admin() {
               <p className="text-sm text-muted-foreground">Manage your website content</p>
             </div>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={logout}
+            className="text-muted-foreground hover:text-foreground"
+            data-testid="button-admin-logout"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
         </div>
       </header>
 
