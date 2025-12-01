@@ -24,46 +24,31 @@ export default function Login() {
 
     try {
       if (email === MOCK_CREDENTIALS.email && password === MOCK_CREDENTIALS.password) {
-        // Call backend mock-login endpoint
-        const response = await fetch("/api/auth/mock-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+        // Mock user data for frontend
+        const mockUser = {
+          id: "mock-admin-user",
+          email: MOCK_CREDENTIALS.email,
+          firstName: "Ruthvesh",
+          lastName: "Admin",
+          isAdmin: true,
+          profileImageUrl: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        localStorage.setItem("mockAuthUser", JSON.stringify(mockUser));
+        toast({
+          title: "Login successful!",
+          description: "Welcome to the admin dashboard.",
         });
-
-        if (response.ok) {
-          // Mock user data for frontend
-          const mockUser = {
-            id: "mock-admin-user",
-            email: MOCK_CREDENTIALS.email,
-            firstName: "Ruthvesh",
-            lastName: "Admin",
-            isAdmin: true,
-            profileImageUrl: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-
-          localStorage.setItem("mockAuthUser", JSON.stringify(mockUser));
-          toast({
-            title: "Login successful!",
-            description: "Welcome to the admin dashboard.",
-          });
-          
-          setTimeout(() => {
-            setLocation("/admin");
-          }, 500);
-        } else {
-          toast({
-            title: "Login failed",
-            description: "An error occurred during login",
-            variant: "destructive",
-          });
-        }
+        
+        setTimeout(() => {
+          setLocation("/admin");
+        }, 500);
       } else {
         toast({
           title: "Invalid credentials",
-          description: "Please Correct Ones",
+          description: "Please use the correct email and password",
           variant: "destructive",
         });
       }
