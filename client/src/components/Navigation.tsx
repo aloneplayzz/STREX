@@ -5,12 +5,12 @@ import { Menu, X, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { href: "#products", label: "Products" },
-  { href: "#ai-agents", label: "AI Agents" },
-  { href: "#courses", label: "Courses" },
-  { href: "#founders", label: "Team" },
-  { href: "/blog", label: "Blog", isRoute: true },
-  { href: "#contact", label: "Contact" },
+  { href: "#products", label: "PRODUCTS" },
+  { href: "#ai-agents", label: "AI AGENTS" },
+  { href: "#courses", label: "COURSES" },
+  { href: "#founders", label: "TEAM" },
+  { href: "/blog", label: "BLOG", isRoute: true },
+  { href: "#contact", label: "CONTACT" },
 ];
 
 export function Navigation() {
@@ -51,11 +51,7 @@ export function Navigation() {
               className="flex items-center gap-2 group"
               data-testid="link-logo"
             >
-              <div className="relative w-10 h-10 rounded-md bg-gradient-to-br from-primary via-purple to-cyan flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300">
-                <Zap className="w-6 h-6 text-white" />
-                <div className="absolute inset-0 rounded-md bg-primary/30 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-              <span className="font-display font-bold text-xl tracking-tight">
+              <span className="font-display font-bold text-xl tracking-tight uppercase">
                 Stratiumex
               </span>
             </button>
