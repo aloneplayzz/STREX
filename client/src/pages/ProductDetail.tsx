@@ -196,9 +196,11 @@ export default function ProductDetail() {
                   </div>
 
                   {/* CTA Button */}
-                  <Button className="w-full bg-gradient-to-r from-primary to-purple" size="lg" data-testid="button-buy-product">
-                    Purchase Now
-                  </Button>
+                  <Link href="/#contact">
+                    <Button className="w-full bg-gradient-to-r from-primary to-purple" size="lg" data-testid="button-buy-product">
+                      Purchase Now
+                    </Button>
+                  </Link>
 
                   {/* Benefits */}
                   <div className="mt-6 space-y-3 text-sm">

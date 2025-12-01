@@ -199,9 +199,11 @@ export default function CourseDetail() {
                   </div>
 
                   {/* CTA Button */}
-                  <Button className="w-full bg-gradient-to-r from-primary to-purple" size="lg" data-testid="button-enroll">
-                    Enroll Now
-                  </Button>
+                  <Link href="/#contact">
+                    <Button className="w-full bg-gradient-to-r from-primary to-purple" size="lg" data-testid="button-enroll">
+                      Enroll Now
+                    </Button>
+                  </Link>
 
                   {/* Course Features */}
                   <div className="mt-6 space-y-3 text-sm">

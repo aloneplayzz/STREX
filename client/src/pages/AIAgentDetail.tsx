@@ -196,9 +196,11 @@ export default function AIAgentDetail() {
                   </div>
 
                   {/* CTA Button */}
-                  <Button className="w-full bg-gradient-to-r from-cyan to-primary" size="lg" data-testid="button-get-agent">
-                    Get Started
-                  </Button>
+                  <Link href="/#contact">
+                    <Button className="w-full bg-gradient-to-r from-cyan to-primary" size="lg" data-testid="button-get-agent">
+                      Get Started
+                    </Button>
+                  </Link>
 
                   {/* Benefits */}
                   <div className="mt-6 space-y-3 text-sm">

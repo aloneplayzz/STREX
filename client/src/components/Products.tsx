@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Link } from "wouter";
+import { Link as WouterLink } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -140,7 +140,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </div>
 
           {/* Action */}
-          <Link href={`/products/${product.id}`}>
+          <WouterLink href={`/products/${product.id}`}>
             <Button
               variant="ghost"
               className="w-full mt-2 group/btn"
@@ -149,7 +149,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
               Learn More
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
             </Button>
-          </Link>
+          </WouterLink>
         </div>
       </Card>
     </motion.div>
@@ -206,14 +206,16 @@ export function Products() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mt-12"
         >
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-primary to-purple"
-            data-testid="button-view-all-products"
-          >
-            View All Products
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
+          <WouterLink href="/products">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-primary to-purple"
+              data-testid="button-view-all-products"
+            >
+              View All Products
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </WouterLink>
         </motion.div>
       </div>
     </section>

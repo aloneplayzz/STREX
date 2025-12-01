@@ -233,14 +233,16 @@ export function AIAgents() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mt-12"
         >
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-cyan to-primary"
-            data-testid="button-explore-ai"
-          >
-            Explore AI Solutions
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
+          <Link href="/ai-agents">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-cyan to-primary"
+              data-testid="button-explore-ai"
+            >
+              Explore AI Solutions
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>
