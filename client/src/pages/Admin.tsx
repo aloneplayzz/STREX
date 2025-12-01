@@ -649,6 +649,371 @@ function TestimonialForm({
   );
 }
 
+function CaseStudiesTab() {
+  const { toast } = useToast();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
+  const { data: caseStudies = [], isLoading } = useQuery<CaseStudy[]>({
+    queryKey: ['/api/case-studies'],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('POST', '/api/case-studies', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/case-studies'] });
+      setIsCreateOpen(false);
+      toast({ title: "Case study created successfully" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('DELETE', `/api/case-studies/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/case-studies'] });
+      toast({ title: "Case study deleted successfully" });
+    },
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-12 text-muted-foreground">Loading case studies...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-display font-bold">Case Studies</h2>
+          <p className="text-muted-foreground">{caseStudies.length} case studies</p>
+        </div>
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button data-testid="button-create-case-study">
+              <Plus className="w-4 h-4 mr-2" />
+              New Case Study
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Case Study</DialogTitle>
+            </DialogHeader>
+            <CaseStudyForm 
+              onSubmit={(data) => createMutation.mutate(data)} 
+              isSubmitting={createMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="grid gap-4">
+        {caseStudies.length === 0 ? (
+          <Card className="glass-strong border-white/10 p-12 text-center">
+            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No case studies yet. Add your first one!</p>
+          </Card>
+        ) : (
+          caseStudies.map((study) => (
+            <Card 
+              key={study.id} 
+              className="glass-strong border-white/10 p-6"
+              data-testid={`case-study-card-${study.id}`}
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-semibold text-lg">{study.title}</h3>
+                    <p className="text-sm text-muted-foreground">{study.industry}</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground">{study.description}</p>
+                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-destructive">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Case Study?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => deleteMutation.mutate(study.id)}
+                          className="bg-destructive text-destructive-foreground"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CaseStudyForm({ 
+  onSubmit, 
+  isSubmitting 
+}: { 
+  onSubmit: (data: any) => void;
+  isSubmitting: boolean;
+}) {
+  const [title, setTitle] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({ title, industry, description });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Title</label>
+        <Input 
+          value={title} 
+          onChange={(e) => setTitle(e.target.value)} 
+          placeholder="Case study title"
+          data-testid="input-case-study-title"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Industry</label>
+        <Input 
+          value={industry} 
+          onChange={(e) => setIndustry(e.target.value)} 
+          placeholder="e.g., E-commerce, SaaS"
+          data-testid="input-case-study-industry"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Description</label>
+        <Textarea 
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+          placeholder="Case study description..."
+          className="min-h-[150px]"
+          data-testid="input-case-study-description"
+        />
+      </div>
+      <Button type="submit" disabled={isSubmitting} data-testid="button-submit-case-study">
+        {isSubmitting ? "Saving..." : "Create Case Study"}
+      </Button>
+    </form>
+  );
+}
+
+function CoursesTab() {
+  const { toast } = useToast();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
+  const { data: courses = [], isLoading } = useQuery<Course[]>({
+    queryKey: ['/api/courses'],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return apiRequest('POST', '/api/courses', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/courses'] });
+      setIsCreateOpen(false);
+      toast({ title: "Course created successfully" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('DELETE', `/api/courses/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/courses'] });
+      toast({ title: "Course deleted successfully" });
+    },
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-12 text-muted-foreground">Loading courses...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-display font-bold">Courses</h2>
+          <p className="text-muted-foreground">{courses.length} courses</p>
+        </div>
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button data-testid="button-create-course">
+              <Plus className="w-4 h-4 mr-2" />
+              New Course
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Course</DialogTitle>
+            </DialogHeader>
+            <CourseForm 
+              onSubmit={(data) => createMutation.mutate(data)} 
+              isSubmitting={createMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {courses.length === 0 ? (
+          <Card className="glass-strong border-white/10 p-12 text-center col-span-2">
+            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No courses yet. Add your first one!</p>
+          </Card>
+        ) : (
+          courses.map((course) => (
+            <Card 
+              key={course.id} 
+              className="glass-strong border-white/10 p-6"
+              data-testid={`course-card-${course.id}`}
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-semibold text-lg">{course.title}</h3>
+                    <p className="text-sm text-muted-foreground">${course.price}</p>
+                  </div>
+                  <Badge>{course.category}</Badge>
+                </div>
+                <p className="text-muted-foreground text-sm">{course.description}</p>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  {course.duration} hours
+                </div>
+                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-destructive">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Course?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => deleteMutation.mutate(course.id)}
+                          className="bg-destructive text-destructive-foreground"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CourseForm({ 
+  onSubmit, 
+  isSubmitting 
+}: { 
+  onSubmit: (data: any) => void;
+  isSubmitting: boolean;
+}) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({ title, description, category, price, duration });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Title</label>
+        <Input 
+          value={title} 
+          onChange={(e) => setTitle(e.target.value)} 
+          placeholder="Course title"
+          data-testid="input-course-title"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Category</label>
+        <Input 
+          value={category} 
+          onChange={(e) => setCategory(e.target.value)} 
+          placeholder="e.g., Web Development"
+          data-testid="input-course-category"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium">Price</label>
+          <Input 
+            type="number" 
+            value={price} 
+            onChange={(e) => setPrice(parseFloat(e.target.value))} 
+            placeholder="99.99"
+            data-testid="input-course-price"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Duration (hours)</label>
+          <Input 
+            type="number" 
+            value={duration} 
+            onChange={(e) => setDuration(parseInt(e.target.value))} 
+            placeholder="20"
+            data-testid="input-course-duration"
+          />
+        </div>
+      </div>
+      <div>
+        <label className="text-sm font-medium">Description</label>
+        <Textarea 
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+          placeholder="Course description..."
+          className="min-h-[120px]"
+          data-testid="input-course-description"
+        />
+      </div>
+      <Button type="submit" disabled={isSubmitting} data-testid="button-submit-course">
+        {isSubmitting ? "Saving..." : "Create Course"}
+      </Button>
+    </form>
+  );
+}
+
 function OverviewTab() {
   const { data: contacts = [] } = useQuery<Contact[]>({
     queryKey: ['/api/contacts'],
@@ -894,18 +1259,8 @@ export default function Admin() {
               {activeTab === "contacts" && <ContactsTab />}
               {activeTab === "blog" && <BlogTab />}
               {activeTab === "testimonials" && <TestimonialsTab />}
-              {activeTab === "case-studies" && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <BookOpen className="w-12 h-12 mx-auto mb-4" />
-                  <p>Case Studies management coming soon</p>
-                </div>
-              )}
-              {activeTab === "courses" && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <BookOpen className="w-12 h-12 mx-auto mb-4" />
-                  <p>Courses management coming soon</p>
-                </div>
-              )}
+              {activeTab === "case-studies" && <CaseStudiesTab />}
+              {activeTab === "courses" && <CoursesTab />}
             </motion.div>
           </main>
         </div>
