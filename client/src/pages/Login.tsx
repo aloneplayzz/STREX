@@ -124,27 +124,7 @@ export default function Login() {
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAutoFill}
-            className="w-full"
-            data-testid="button-autofill"
-          >
-            Auto-fill Credentials
-          </Button>
         </form>
-
-        <div className="mt-6 p-4 bg-primary/10 rounded-md border border-primary/20">
-          <p className="text-xs text-muted-foreground mb-2 font-semibold">Demo Credentials:</p>
-          <p className="text-xs text-muted-foreground mb-1">
-            <span className="text-foreground">Email:</span> ruthvesh15@gmail.com
-          </p>
-          <p className="text-xs text-muted-foreground">
-            <span className="text-foreground">Password:</span> ruthvesh@2009
-          </p>
-        </div>
       </Card>
     </div>
   );
