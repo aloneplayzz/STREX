@@ -24,27 +24,42 @@ export default function Login() {
 
     try {
       if (email === MOCK_CREDENTIALS.email && password === MOCK_CREDENTIALS.password) {
-        // Mock user data for admin access
-        const mockUser = {
-          id: "mock-admin-user",
-          email: MOCK_CREDENTIALS.email,
-          firstName: "Ruthvesh",
-          lastName: "Admin",
-          isAdmin: true,
-          profileImageUrl: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        localStorage.setItem("mockAuthUser", JSON.stringify(mockUser));
-        toast({
-          title: "Login successful!",
-          description: "Welcome to the admin dashboard.",
+        // Call backend mock-login endpoint
+        const response = await fetch("/api/auth/mock-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         });
-        
-        setTimeout(() => {
-          setLocation("/admin");
-        }, 500);
+
+        if (response.ok) {
+          // Mock user data for frontend
+          const mockUser = {
+            id: "mock-admin-user",
+            email: MOCK_CREDENTIALS.email,
+            firstName: "Ruthvesh",
+            lastName: "Admin",
+            isAdmin: true,
+            profileImageUrl: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+
+          localStorage.setItem("mockAuthUser", JSON.stringify(mockUser));
+          toast({
+            title: "Login successful!",
+            description: "Welcome to the admin dashboard.",
+          });
+          
+          setTimeout(() => {
+            setLocation("/admin");
+          }, 500);
+        } else {
+          toast({
+            title: "Login failed",
+            description: "An error occurred during login",
+            variant: "destructive",
+          });
+        }
       } else {
         toast({
           title: "Invalid credentials",

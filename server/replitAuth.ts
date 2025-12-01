@@ -131,7 +131,12 @@ export async function setupAuth(app: Express) {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  // Allow mock auth users (development)
+  if (user?.id === "mock-admin-user") {
+    return next();
+  }
+
+  if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -159,6 +164,12 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
 export const isAdmin: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
+  
+  // Allow mock admin users (development)
+  if (user?.id === "mock-admin-user") {
+    return next();
+  }
+  
   if (!user?.claims?.sub) {
     return res.status(401).json({ message: "Unauthorized" });
   }

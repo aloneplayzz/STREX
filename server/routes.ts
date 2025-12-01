@@ -22,6 +22,50 @@ export async function registerRoutes(
   // Auth middleware
   await setupAuth(app);
 
+  // Mock auth endpoint for development
+  app.post('/api/auth/mock-login', async (req: any, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (email === "ruthvesh15@gmail.com" && password === "ruthvesh@2009") {
+        const mockUserId = "mock-admin-user";
+        
+        // Upsert mock user to database
+        await storage.upsertUser({
+          id: mockUserId,
+          email: email,
+          firstName: "Ruthvesh",
+          lastName: "Admin",
+          profileImageUrl: null,
+        });
+
+        // Create a mock admin session
+        const mockUser = {
+          id: mockUserId,
+          email: email,
+          isAdmin: true,
+          claims: { sub: mockUserId },
+        };
+        req.user = mockUser;
+        
+        // Save session
+        await new Promise((resolve, reject) => {
+          req.session.save((err: any) => {
+            if (err) reject(err);
+            else resolve(true);
+          });
+        });
+
+        res.json({ success: true, message: "Mock login successful" });
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    } catch (error) {
+      console.error("Error in mock login:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
