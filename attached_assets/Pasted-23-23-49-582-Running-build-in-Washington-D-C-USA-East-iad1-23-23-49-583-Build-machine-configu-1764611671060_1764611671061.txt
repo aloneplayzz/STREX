@@ -1,0 +1,52 @@
+23:23:49.582 Running build in Washington, D.C., USA (East) – iad1
+23:23:49.583 Build machine configuration: 2 cores, 8 GB
+23:23:49.712 Cloning github.com/aloneplayzz/STREX (Branch: main, Commit: 668e0a7)
+23:23:49.713 Previous build caches not available.
+23:23:49.916 Cloning completed: 203.000ms
+23:23:49.951 Found .vercelignore
+23:23:49.969 Removed 121 ignored files defined in .vercelignore
+23:23:49.969   /.git/config
+23:23:49.969   /.git/description
+23:23:49.969   /.git/FETCH_HEAD
+23:23:49.969   /.git/HEAD
+23:23:49.969   /.git/hooks/applypatch-msg.sample
+23:23:49.969   /.git/hooks/commit-msg.sample
+23:23:49.969   /.git/hooks/fsmonitor-watchman.sample
+23:23:49.969   /.git/hooks/post-update.sample
+23:23:49.970   /.git/hooks/pre-applypatch.sample
+23:23:49.970   /.git/hooks/pre-commit.sample
+23:23:50.289 Running "vercel build"
+23:23:50.700 Vercel CLI 48.12.0
+23:23:51.306 Installing dependencies...
+23:23:55.794 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+23:23:55.796 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+23:24:01.140 
+23:24:01.141 added 502 packages in 10s
+23:24:01.142 
+23:24:01.142 67 packages are looking for funding
+23:24:01.142   run `npm fund` for details
+23:24:01.306 
+23:24:01.307 > rest-express@1.0.0 build
+23:24:01.308 > tsx script/build.ts
+23:24:01.309 
+23:24:01.669 
+23:24:01.669 node:internal/modules/run_main:107
+23:24:01.669     triggerUncaughtException(
+23:24:01.671     ^
+23:24:01.671 Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/vercel/path0/script/build.ts' imported from /vercel/path0/
+23:24:01.672     at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+23:24:01.672     at moduleResolve (node:internal/modules/esm/resolve:864:10)
+23:24:01.672     at defaultResolve (node:internal/modules/esm/resolve:990:11)
+23:24:01.673     at nextResolve (node:internal/modules/esm/hooks:785:28)
+23:24:01.673     at resolveBase (file:///vercel/path0/node_modules/tsx/dist/esm/index.mjs?1764611641522:2:3744)
+23:24:01.673     at resolveDirectory (file:///vercel/path0/node_modules/tsx/dist/esm/index.mjs?1764611641522:2:4243)
+23:24:01.674     at resolveTsPaths (file:///vercel/path0/node_modules/tsx/dist/esm/index.mjs?1764611641522:2:4984)
+23:24:01.674     at resolve (file:///vercel/path0/node_modules/tsx/dist/esm/index.mjs?1764611641522:2:5361)
+23:24:01.674     at nextResolve (node:internal/modules/esm/hooks:785:28)
+23:24:01.674     at AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:271:30) {
+23:24:01.675   code: 'ERR_MODULE_NOT_FOUND',
+23:24:01.675   url: 'file:///vercel/path0/script/build.ts'
+23:24:01.675 }
+23:24:01.675 
+23:24:01.675 Node.js v24.11.1
+23:24:01.692 Error: Command "npm run build" exited with 1

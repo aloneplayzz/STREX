@@ -6,7 +6,6 @@ HOSTINGER_SETUP_GUIDE.md
 QUICK_HOSTINGER_FIX.md
 HOSTINGER_FINAL_DEPLOYMENT.md
 HOSTINGER_DEPLOY_NOW.md
-server/
 .env.local
 .env.*.local
 node_modules/
@@ -16,7 +15,6 @@ out/
 .vercel/
 .turbo/
 dist/index.cjs
-script/
 client/src/
 shared/
 package.json.backup
