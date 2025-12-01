@@ -130,7 +130,7 @@ export function CaseStudies() {
   const { studies: dbCaseStudies } = useCaseStudies();
   
   const caseStudies = dbCaseStudies && dbCaseStudies.length > 0 
-    ? dbCaseStudies.filter(s => s.featured)
+    ? dbCaseStudies
     : fallbackCaseStudies;
 
   return (

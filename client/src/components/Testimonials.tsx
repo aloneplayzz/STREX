@@ -112,7 +112,7 @@ export function Testimonials() {
   const { testimonials: dbTestimonials } = useTestimonials();
   
   const displayTestimonials = dbTestimonials && dbTestimonials.length > 0 
-    ? dbTestimonials.filter(t => t.featured)
+    ? dbTestimonials
     : fallbackTestimonials;
 
   return (
