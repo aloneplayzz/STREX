@@ -1,0 +1,51 @@
+23:26:56.454 Running build in Washington, D.C., USA (East) – iad1
+23:26:56.455 Build machine configuration: 2 cores, 8 GB
+23:26:56.465 Cloning github.com/aloneplayzz/STREX (Branch: main, Commit: 133d526)
+23:26:56.466 Skipping build cache, deployment was triggered without cache.
+23:26:56.697 Cloning completed: 232.000ms
+23:26:56.731 Found .vercelignore
+23:26:56.746 Removed 112 ignored files defined in .vercelignore
+23:26:56.746   /.git/config
+23:26:56.746   /.git/description
+23:26:56.746   /.git/FETCH_HEAD
+23:26:56.746   /.git/HEAD
+23:26:56.746   /.git/hooks/applypatch-msg.sample
+23:26:56.746   /.git/hooks/commit-msg.sample
+23:26:56.746   /.git/hooks/fsmonitor-watchman.sample
+23:26:56.746   /.git/hooks/post-update.sample
+23:26:56.747   /.git/hooks/pre-applypatch.sample
+23:26:56.747   /.git/hooks/pre-commit.sample
+23:26:57.105 Running "vercel build"
+23:26:57.496 Vercel CLI 48.12.0
+23:26:58.090 Installing dependencies...
+23:27:02.606 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+23:27:02.608 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+23:27:07.669 
+23:27:07.670 added 502 packages in 9s
+23:27:07.670 
+23:27:07.670 67 packages are looking for funding
+23:27:07.670   run `npm fund` for details
+23:27:07.830 
+23:27:07.830 > rest-express@1.0.0 build
+23:27:07.831 > tsx script/build.ts
+23:27:07.831 
+23:27:08.926 building client...
+23:27:08.990 [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+23:27:09.557 transforming...
+23:27:09.568 [32m✓[39m 2 modules transformed.
+23:27:10.112 [31mx[39m Build failed in 587ms
+23:27:10.113 [31m[vite]: Rollup failed to resolve import "/src/main.tsx" from "/vercel/path0/client/index.html".
+23:27:10.113 This is most likely unintended because it can break your application at runtime.
+23:27:10.113 If you do want to externalize this module explicitly add it to
+23:27:10.113 `build.rollupOptions.external`[39m
+23:27:10.113     at viteWarn (/vercel/path0/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js:65854:17)
+23:27:10.113     at onwarn (/vercel/path0/node_modules/@vitejs/plugin-react/dist/index.js:90:7)
+23:27:10.113     at onRollupWarning (/vercel/path0/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js:65884:5)
+23:27:10.113     at onwarn (/vercel/path0/node_modules/vite/dist/node/chunks/dep-D_zLpgQd.js:65549:7)
+23:27:10.113     at <anonymous> (/vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:19452:13)
+23:27:10.113     at Object.logger (/vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21178:9)
+23:27:10.113     at ModuleLoader.handleInvalidResolvedId (/vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:20067:26)
+23:27:10.113     at <anonymous> (/vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:20025:26) {
+23:27:10.114   watchFiles: [ '/vercel/path0/client/index.html' ]
+23:27:10.114 }
+23:27:10.157 Error: Command "npm run build" exited with 1
