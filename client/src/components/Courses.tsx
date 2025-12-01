@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCourses } from "@/hooks/useLocalStorage";
 import {
   GraduationCap,
   Code2,
@@ -184,6 +185,9 @@ function CourseCard({ course, index }: { course: CourseItem; index: number }) {
 export function Courses() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { courses: dbCourses } = useCourses();
+  
+  const displayCourses = dbCourses && dbCourses.length > 0 ? dbCourses : courses;
 
   return (
     <section
@@ -245,7 +249,7 @@ export function Courses() {
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course, index) => (
+          {displayCourses.map((course, index) => (
             <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>

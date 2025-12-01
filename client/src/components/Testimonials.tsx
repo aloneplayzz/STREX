@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTestimonials } from "@/hooks/useLocalStorage";
 import type { Testimonial } from "@shared/schema";
 
 const fallbackTestimonials: Testimonial[] = [
@@ -109,12 +109,10 @@ function TestimonialSkeleton() {
 }
 
 export function Testimonials() {
-  const { data: dbTestimonials, isLoading } = useQuery<Testimonial[]>({
-    queryKey: ["/api/testimonials?featured=true"],
-  });
-
-  const testimonials = dbTestimonials && dbTestimonials.length > 0 
-    ? dbTestimonials 
+  const { testimonials: dbTestimonials } = useTestimonials();
+  
+  const displayTestimonials = dbTestimonials && dbTestimonials.length > 0 
+    ? dbTestimonials.filter(t => t.featured)
     : fallbackTestimonials;
 
   return (
@@ -138,23 +136,15 @@ export function Testimonials() {
           </p>
         </motion.div>
 
-        {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <TestimonialSkeleton key={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.slice(0, 6).map((testimonial, index) => (
-              <TestimonialCard 
-                key={testimonial.id} 
-                testimonial={testimonial} 
-                index={index} 
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayTestimonials.slice(0, 6).map((testimonial, index) => (
+            <TestimonialCard 
+              key={testimonial.id} 
+              testimonial={testimonial} 
+              index={index} 
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

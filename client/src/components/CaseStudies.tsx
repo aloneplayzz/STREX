@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Building2, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useCaseStudies } from "@/hooks/useLocalStorage";
 import type { CaseStudy } from "@shared/schema";
 
 const fallbackCaseStudies: CaseStudy[] = [
@@ -128,12 +127,10 @@ function CaseStudySkeleton() {
 }
 
 export function CaseStudies() {
-  const { data: dbCaseStudies, isLoading } = useQuery<CaseStudy[]>({
-    queryKey: ["/api/case-studies?featured=true"],
-  });
-
+  const { studies: dbCaseStudies } = useCaseStudies();
+  
   const caseStudies = dbCaseStudies && dbCaseStudies.length > 0 
-    ? dbCaseStudies 
+    ? dbCaseStudies.filter(s => s.featured)
     : fallbackCaseStudies;
 
   return (
@@ -155,19 +152,11 @@ export function CaseStudies() {
           </p>
         </motion.div>
 
-        {isLoading ? (
-          <div className="grid md:grid-cols-2 gap-8">
-            {[1, 2].map((i) => (
-              <CaseStudySkeleton key={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-8">
-            {caseStudies.slice(0, 4).map((study, index) => (
-              <CaseStudyCard key={study.id} study={study} index={index} />
-            ))}
-          </div>
-        )}
+        <div className="grid md:grid-cols-2 gap-8">
+          {caseStudies.slice(0, 4).map((study, index) => (
+            <CaseStudyCard key={study.id} study={study} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );

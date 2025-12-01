@@ -1,8 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,14 +20,13 @@ import {
   MessageSquare,
   Send,
   MapPin,
-  Phone,
   Clock,
   Loader2,
   CheckCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
+import { useContacts } from "@/hooks/useLocalStorage";
 
 const contactInfo = [
   {
@@ -55,6 +53,8 @@ export function ContactForm() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toast } = useToast();
+  const { add } = useContacts();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<InsertContact>({
     resolver: zodResolver(insertContactSchema),
@@ -67,29 +67,33 @@ export function ContactForm() {
     },
   });
 
-  const submitMutation = useMutation({
-    mutationFn: async (data: InsertContact) => {
-      const response = await apiRequest("POST", "/api/contact", data);
-      return response;
-    },
-    onSuccess: () => {
+  const onSubmit = async (data: InsertContact) => {
+    setIsSubmitting(true);
+    try {
+      add({
+        id: Date.now().toString(),
+        name: data.name,
+        email: data.email,
+        company: data.company || "",
+        subject: data.subject,
+        message: data.message,
+        isRead: false,
+        createdAt: new Date(),
+      });
       toast({
         title: "Message sent!",
         description: "We'll get back to you within 24 hours.",
       });
       form.reset();
-    },
-    onError: (error: Error) => {
+    } catch (error) {
       toast({
         title: "Something went wrong",
-        description: error.message || "Please try again later.",
+        description: "Please try again later.",
         variant: "destructive",
       });
-    },
-  });
-
-  const onSubmit = (data: InsertContact) => {
-    submitMutation.mutate(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -306,18 +310,13 @@ export function ContactForm() {
                     type="submit"
                     size="lg"
                     className="w-full bg-gradient-to-r from-cyan to-primary hover:opacity-90"
-                    disabled={submitMutation.isPending}
+                    disabled={isSubmitting}
                     data-testid="button-submit-contact"
                   >
-                    {submitMutation.isPending ? (
+                    {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 w-5 h-5 animate-spin" />
                         Sending...
-                      </>
-                    ) : submitMutation.isSuccess ? (
-                      <>
-                        <CheckCircle className="mr-2 w-5 h-5" />
-                        Message Sent!
                       </>
                     ) : (
                       <>
