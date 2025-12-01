@@ -772,16 +772,28 @@ function CaseStudyForm({
   isSubmitting: boolean;
 }) {
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [client, setClient] = useState("");
   const [industry, setIndustry] = useState("");
-  const [description, setDescription] = useState("");
+  const [challenge, setChallenge] = useState("");
+  const [solution, setSolution] = useState("");
+  const [results, setResults] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, industry, description });
+    onSubmit({ 
+      title, 
+      slug: slug || title.toLowerCase().replace(/\s+/g, '-'), 
+      client, 
+      industry, 
+      challenge, 
+      solution, 
+      results 
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto">
       <div>
         <label className="text-sm font-medium">Title</label>
         <Input 
@@ -789,6 +801,15 @@ function CaseStudyForm({
           onChange={(e) => setTitle(e.target.value)} 
           placeholder="Case study title"
           data-testid="input-case-study-title"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Client</label>
+        <Input 
+          value={client} 
+          onChange={(e) => setClient(e.target.value)} 
+          placeholder="Client name"
+          data-testid="input-case-study-client"
         />
       </div>
       <div>
@@ -801,13 +822,33 @@ function CaseStudyForm({
         />
       </div>
       <div>
-        <label className="text-sm font-medium">Description</label>
+        <label className="text-sm font-medium">Challenge</label>
         <Textarea 
-          value={description} 
-          onChange={(e) => setDescription(e.target.value)} 
-          placeholder="Case study description..."
-          className="min-h-[150px]"
-          data-testid="input-case-study-description"
+          value={challenge} 
+          onChange={(e) => setChallenge(e.target.value)} 
+          placeholder="What was the challenge?"
+          className="min-h-[80px]"
+          data-testid="input-case-study-challenge"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Solution</label>
+        <Textarea 
+          value={solution} 
+          onChange={(e) => setSolution(e.target.value)} 
+          placeholder="How did you solve it?"
+          className="min-h-[80px]"
+          data-testid="input-case-study-solution"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Results</label>
+        <Textarea 
+          value={results} 
+          onChange={(e) => setResults(e.target.value)} 
+          placeholder="What were the results?"
+          className="min-h-[80px]"
+          data-testid="input-case-study-results"
         />
       </div>
       <Button type="submit" disabled={isSubmitting} data-testid="button-submit-case-study">
@@ -945,18 +986,28 @@ function CourseForm({
   isSubmitting: boolean;
 }) {
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
   const [price, setPrice] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState("20");
+  const [level, setLevel] = useState("Beginner");
+  const [instructor, setInstructor] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, description, category, price, duration });
+    onSubmit({ 
+      title, 
+      slug: slug || title.toLowerCase().replace(/\s+/g, '-'),
+      description, 
+      price, 
+      duration,
+      level,
+      instructor
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto">
       <div>
         <label className="text-sm font-medium">Title</label>
         <Input 
@@ -967,35 +1018,43 @@ function CourseForm({
         />
       </div>
       <div>
-        <label className="text-sm font-medium">Category</label>
+        <label className="text-sm font-medium">Instructor</label>
         <Input 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value)} 
-          placeholder="e.g., Web Development"
-          data-testid="input-course-category"
+          value={instructor} 
+          onChange={(e) => setInstructor(e.target.value)} 
+          placeholder="Instructor name"
+          data-testid="input-course-instructor"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium">Price</label>
+          <label className="text-sm font-medium">Price ($)</label>
           <Input 
             type="number" 
             value={price} 
-            onChange={(e) => setPrice(parseFloat(e.target.value))} 
-            placeholder="99.99"
+            onChange={(e) => setPrice(parseInt(e.target.value))} 
+            placeholder="99"
             data-testid="input-course-price"
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Duration (hours)</label>
+          <label className="text-sm font-medium">Level</label>
           <Input 
-            type="number" 
-            value={duration} 
-            onChange={(e) => setDuration(parseInt(e.target.value))} 
-            placeholder="20"
-            data-testid="input-course-duration"
+            value={level} 
+            onChange={(e) => setLevel(e.target.value)} 
+            placeholder="Beginner, Intermediate, Advanced"
+            data-testid="input-course-level"
           />
         </div>
+      </div>
+      <div>
+        <label className="text-sm font-medium">Duration</label>
+        <Input 
+          value={duration} 
+          onChange={(e) => setDuration(e.target.value)} 
+          placeholder="e.g., 20 hours"
+          data-testid="input-course-duration"
+        />
       </div>
       <div>
         <label className="text-sm font-medium">Description</label>
@@ -1003,7 +1062,7 @@ function CourseForm({
           value={description} 
           onChange={(e) => setDescription(e.target.value)} 
           placeholder="Course description..."
-          className="min-h-[120px]"
+          className="min-h-[100px]"
           data-testid="input-course-description"
         />
       </div>
