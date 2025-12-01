@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link as WouterLink } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Building2, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -89,14 +89,16 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button 
-            variant="ghost" 
-            className="w-full group"
-            data-testid={`button-view-case-study-${study.id}`}
-          >
-            View Full Case Study
-            <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-          </Button>
+          <WouterLink href={`/case-studies/${study.id}`}>
+            <Button 
+              variant="ghost" 
+              className="w-full group"
+              data-testid={`button-view-case-study-${study.id}`}
+            >
+              View Full Case Study
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </WouterLink>
         </CardFooter>
       </Card>
     </motion.div>

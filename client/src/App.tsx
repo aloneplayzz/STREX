@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import CourseDetail from "@/pages/CourseDetail";
+import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
@@ -17,7 +18,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
-      <Route path="/courses/:slug" component={CourseDetail} />
+      <Route path="/courses/:id" component={CourseDetail} />
+      <Route path="/case-studies/:id" component={CaseStudyDetail} />
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />
       <Route component={NotFound} />

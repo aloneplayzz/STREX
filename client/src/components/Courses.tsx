@@ -1,9 +1,7 @@
 import { useRef } from "react";
+import { useInView } from "framer-motion";
 import { Link } from "wouter";
-import { motion, useInView } from "framer-motion";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { useCourses } from "@/hooks/useLocalStorage";
 import {
   GraduationCap,
@@ -18,6 +16,9 @@ import {
   Star,
   PlayCircle,
 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface CourseItem {
   id: string;
@@ -164,7 +165,7 @@ function CourseCard({ course, index }: { course: CourseItem; index: number }) {
             <span className="font-display font-bold text-xl text-purple">
               {course.price}
             </span>
-            <Link href={`/courses/${course.slug}`}>
+            <Link href={`/courses/${course.id}`}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -253,23 +254,6 @@ export function Courses() {
             <CourseCard key={course.id} course={course} index={index} />
           ))}
         </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-purple to-primary"
-            data-testid="button-browse-courses"
-          >
-            Browse All Courses
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-        </motion.div>
       </div>
     </section>
   );
