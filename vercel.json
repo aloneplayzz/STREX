@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "tsx script/build-vercel.ts",
   "outputDirectory": "dist/public",
   "env": {
     "NODE_ENV": "production"
