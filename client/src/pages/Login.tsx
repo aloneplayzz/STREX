@@ -63,7 +63,7 @@ export default function Login() {
       } else {
         toast({
           title: "Invalid credentials",
-          description: "Please use ruthvesh15@gmail.com and ruthvesh@2009",
+          description: "Please Correct Ones",
           variant: "destructive",
         });
       }
