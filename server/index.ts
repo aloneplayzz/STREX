@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import compression from "compression";
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,6 +13,9 @@ declare module "http" {
   }
 }
 
+// Add compression middleware for better performance
+app.use(compression());
+
 app.use(
   express.json({
     verify: (req, _res, buf) => {
@@ -21,6 +25,9 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Trust proxy for Hostinger and other hosting platforms
+app.set("trust proxy", 1);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
