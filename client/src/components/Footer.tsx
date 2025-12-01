@@ -102,10 +102,7 @@ export function Footer() {
               className="flex items-center gap-2 mb-4 group"
               data-testid="link-footer-logo"
             >
-              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-primary via-purple to-cyan flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <span className="font-display font-bold text-xl">StratiumeX</span>
+              <span className="font-display font-bold text-xl uppercase">STRATIUMEX</span>
             </button>
             <p className="text-sm text-muted-foreground mb-4 max-w-xs">
               Empowering businesses with cutting-edge digital products, AI solutions, 
