@@ -34,10 +34,17 @@ import {
   Copy,
   History,
   Settings,
+  RotateCcw,
+  RotateCw,
+  TrendingUp,
+  Heart,
+  GripVertical,
 } from "lucide-react";
-import { calculateReadingTime, exportToJSON, validateJSON } from "@/utils/helpers";
+import { calculateReadingTime, exportToJSON, validateJSON, duplicateItem, reorderItems, calculateStats, filterByTags, isScheduledForLater, getScheduledPublishTime } from "@/utils/helpers";
 import { useBulkSelect } from "@/hooks/useBulkSelect";
 import { useActivityLog } from "@/hooks/useActivityLog";
+import { useUndoRedo } from "@/hooks/useUndoRedo";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import {
   Dialog,
   DialogContent,
@@ -58,7 +65,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useContacts, useBlogPosts, useTestimonials, useCaseStudies, useCourses } from "@/hooks/useLocalStorage";
 
-type TabType = "overview" | "contacts" | "blog" | "testimonials" | "case-studies" | "courses";
+type TabType = "overview" | "contacts" | "blog" | "testimonials" | "case-studies" | "courses" | "stats";
 
 function StatCard({ 
   title, 
@@ -440,10 +447,21 @@ function BlogPostForm({
   const [excerpt, setExcerpt] = useState(post?.excerpt || "");
   const [content, setContent] = useState(post?.content || "");
   const [category, setCategory] = useState(post?.category || "tutorial");
+  const [tags, setTags] = useState(post?.tags?.join(", ") || "");
+  const [favorite, setFavorite] = useState(post?.favorite || false);
+  const [scheduledAt, setScheduledAt] = useState(post?.scheduledAt || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, excerpt, content, category });
+    onSubmit({ 
+      title, 
+      excerpt, 
+      content, 
+      category,
+      tags: tags.split(",").map((t: string) => t.trim()).filter((t: string) => t),
+      favorite,
+      scheduledAt: scheduledAt || null,
+    });
   };
 
   return (
@@ -467,23 +485,60 @@ function BlogPostForm({
         />
       </div>
       <div>
-        <label className="text-sm font-medium">Content</label>
-        <Textarea 
-          value={content} 
-          onChange={(e) => setContent(e.target.value)} 
-          placeholder="Post content..."
-          className="min-h-[200px]"
-          data-testid="input-post-content"
+        <label className="text-sm font-medium">Content (Markdown)</label>
+        <MarkdownEditor
+          value={content}
+          onChange={setContent}
+          placeholder="Write your post content... Use markdown formatting"
         />
       </div>
-      <div>
-        <label className="text-sm font-medium">Category</label>
-        <Input 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value)} 
-          placeholder="tutorial"
-          data-testid="input-post-category"
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium">Category</label>
+          <select 
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-3 py-2 rounded border border-input bg-background"
+            data-testid="select-category"
+          >
+            <option value="tutorial">Tutorial</option>
+            <option value="news">News</option>
+            <option value="guide">Guide</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium">Tags (comma separated)</label>
+          <Input 
+            value={tags} 
+            onChange={(e) => setTags(e.target.value)} 
+            placeholder="react, javascript, web"
+            data-testid="input-tags"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium">Schedule Publishing</label>
+          <input 
+            type="datetime-local"
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)}
+            className="w-full px-3 py-2 rounded border border-input bg-background"
+            data-testid="input-schedule"
+          />
+        </div>
+        <div className="flex items-end">
+          <Button
+            type="button"
+            variant={favorite ? "default" : "outline"}
+            className="w-full"
+            onClick={() => setFavorite(!favorite)}
+            data-testid="button-favorite"
+          >
+            <Heart className={`w-4 h-4 mr-2 ${favorite ? "fill-current" : ""}`} />
+            {favorite ? "Favorited" : "Add to Favorites"}
+          </Button>
+        </div>
       </div>
       <Button type="submit" data-testid="button-submit-post">
         {post ? "Update Post" : "Create Post"}

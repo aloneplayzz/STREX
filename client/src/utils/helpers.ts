@@ -74,3 +74,57 @@ export const getShortcut = (isMac: boolean, key: string): string => {
   const mod = isMac ? 'Cmd' : 'Ctrl';
   return `${mod} + ${key}`;
 };
+
+export const duplicateItem = (item: any): any => {
+  const { id, ...rest } = item;
+  return {
+    ...rest,
+    id: `${id}-copy-${Date.now()}`,
+    title: `${rest.title} (Copy)`,
+  };
+};
+
+export const reorderItems = (items: any[], fromIndex: number, toIndex: number): any[] => {
+  const result = Array.from(items);
+  const [removed] = result.splice(fromIndex, 1);
+  result.splice(toIndex, 0, removed);
+  return result.map((item, idx) => ({ ...item, orderIndex: idx }));
+};
+
+export const calculateStats = (items: any[]) => {
+  const total = items.length;
+  const published = items.filter((i: any) => i.published).length;
+  const favorites = items.filter((i: any) => i.favorite).length;
+  const totalViews = items.reduce((sum: number, i: any) => sum + (i.views || 0), 0);
+  const totalLikes = items.reduce((sum: number, i: any) => sum + (i.likes || 0), 0);
+  return { total, published, favorites, totalViews, totalLikes };
+};
+
+export const filterByTags = (items: any[], tags: string[]): any[] => {
+  if (tags.length === 0) return items;
+  return items.filter((item: any) => 
+    item.tags && item.tags.some((tag: string) => tags.includes(tag))
+  );
+};
+
+export const isScheduledForLater = (scheduledAt: any): boolean => {
+  if (!scheduledAt) return false;
+  return new Date(scheduledAt) > new Date();
+};
+
+export const getScheduledPublishTime = (scheduledAt: any): string => {
+  if (!scheduledAt) return '';
+  const now = new Date();
+  const scheduled = new Date(scheduledAt);
+  const diff = Math.max(0, Math.floor((scheduled.getTime() - now.getTime()) / 1000));
+  
+  if (diff === 0) return 'Ready to publish';
+  
+  const days = Math.floor(diff / 86400);
+  const hours = Math.floor((diff % 86400) / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  
+  if (days > 0) return `${days}d ${hours}h`;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+};

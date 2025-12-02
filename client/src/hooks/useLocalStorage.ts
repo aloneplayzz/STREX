@@ -17,6 +17,12 @@ export interface BlogPost {
   category: string;
   published: boolean;
   createdAt: Date | string;
+  tags?: string[];
+  favorite?: boolean;
+  scheduledAt?: Date | string | null;
+  views?: number;
+  likes?: number;
+  orderIndex?: number;
 }
 
 export interface Testimonial {
@@ -29,6 +35,8 @@ export interface Testimonial {
   rating: number;
   featured: boolean;
   createdAt: Date | string;
+  favorite?: boolean;
+  orderIndex?: number;
 }
 
 export interface Course {
@@ -39,6 +47,7 @@ export interface Course {
   category: string;
   icon: string;
   features: string[];
+  tags?: string[];
 }
 
 export interface CaseStudy {
@@ -53,6 +62,9 @@ export interface CaseStudy {
   coverImage: string | null;
   featured: boolean;
   createdAt: Date | string;
+  tags?: string[];
+  favorite?: boolean;
+  orderIndex?: number;
 }
 
 export interface Contact {
