@@ -48,3 +48,29 @@ export const validateUrl = (url: string): boolean => {
     return false;
   }
 };
+
+export const validateJSON = (jsonString: string): { valid: boolean; error?: string; data?: any } => {
+  try {
+    const data = JSON.parse(jsonString);
+    // Basic structure validation
+    if (typeof data !== 'object') {
+      return { valid: false, error: 'JSON must be an object' };
+    }
+    return { valid: true, data };
+  } catch (e) {
+    return { valid: false, error: `Invalid JSON: ${e instanceof Error ? e.message : 'Unknown error'}` };
+  }
+};
+
+export const formatBytes = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+};
+
+export const getShortcut = (isMac: boolean, key: string): string => {
+  const mod = isMac ? 'Cmd' : 'Ctrl';
+  return `${mod} + ${key}`;
+};

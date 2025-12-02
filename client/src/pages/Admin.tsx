@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -30,8 +30,14 @@ import {
   Search,
   ArrowUp,
   ArrowDown,
+  Upload,
+  Copy,
+  History,
+  Settings,
 } from "lucide-react";
-import { calculateReadingTime, exportToJSON } from "@/utils/helpers";
+import { calculateReadingTime, exportToJSON, validateJSON } from "@/utils/helpers";
+import { useBulkSelect } from "@/hooks/useBulkSelect";
+import { useActivityLog } from "@/hooks/useActivityLog";
 import {
   Dialog,
   DialogContent,
@@ -834,12 +840,52 @@ export default function Admin() {
   const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const { toast } = useToast();
+  const [showBackupModal, setShowBackupModal] = useState(false);
+  const [showActivityLog, setShowActivityLog] = useState(false);
 
   const { contacts } = useContacts();
   const { posts } = useBlogPosts();
   const { testimonials } = useTestimonials();
   const { studies } = useCaseStudies();
   const { courses } = useCourses();
+  const { activities, addActivity } = useActivityLog();
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const isCtrl = isMac ? e.metaKey : e.ctrlKey;
+
+      // Cmd/Ctrl + K: Focus search
+      if (isCtrl && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+        searchInput?.focus();
+      }
+
+      // Cmd/Ctrl + N: New post
+      if (isCtrl && e.key === 'n' && activeTab === 'blog') {
+        e.preventDefault();
+        const newBtn = document.querySelector('[data-testid="button-create-post"]') as HTMLButtonElement;
+        newBtn?.click();
+      }
+
+      // Cmd/Ctrl + H: Show activity log
+      if (isCtrl && e.key === 'h') {
+        e.preventDefault();
+        setShowActivityLog(!showActivityLog);
+      }
+
+      // Cmd/Ctrl + E: Export data
+      if (isCtrl && e.key === 'e') {
+        e.preventDefault();
+        setShowBackupModal(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, showActivityLog]);
 
   if (!user) {
     return (
@@ -862,8 +908,14 @@ export default function Admin() {
             </Button>
             <h1 className="text-2xl font-display font-bold">Admin Dashboard</h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{user?.email || user?.user?.email || 'Admin'}</span>
+            <Button variant="ghost" size="icon" onClick={() => setShowActivityLog(!showActivityLog)} title="Cmd+H" data-testid="button-activity-log">
+              <History className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setShowBackupModal(true)} title="Cmd+E" data-testid="button-backup">
+              <Settings className="w-4 h-4" />
+            </Button>
             <Button variant="outline" size="sm" onClick={logout} data-testid="button-logout">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -920,6 +972,128 @@ export default function Admin() {
           {activeTab === "courses" && <CoursesTab />}
         </motion.div>
       </div>
+
+      {/* Activity Log Modal */}
+      <Dialog open={showActivityLog} onOpenChange={setShowActivityLog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Activity Log (Cmd+H)</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {activities.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No activities yet</p>
+            ) : (
+              activities.map((activity) => (
+                <div key={activity.id} className="flex gap-3 p-3 rounded border border-white/10">
+                  <div className="flex-1">
+                    <p className="font-sm"><Badge className="capitalize">{activity.type}</Badge></p>
+                    <p className="text-sm font-medium">{activity.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {activity.timestamp.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Backup & Restore Modal */}
+      <Dialog open={showBackupModal} onOpenChange={setShowBackupModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Backup & Restore (Cmd+E)</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            {/* Export All Data */}
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Download className="w-4 h-4" /> Export All Data
+              </h3>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  const allData = {
+                    contacts,
+                    posts,
+                    testimonials,
+                    studies,
+                    courses,
+                    exportDate: new Date().toISOString(),
+                  };
+                  const dataStr = JSON.stringify(allData, null, 2);
+                  const blob = new Blob([dataStr], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `stratiumex-backup-${new Date().toISOString().split('T')[0]}.json`;
+                  link.click();
+                  URL.revokeObjectURL(url);
+                  toast({ title: "Data exported successfully" });
+                }}
+                data-testid="button-export-all"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export Complete Backup
+              </Button>
+            </div>
+
+            {/* Import Data */}
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Upload className="w-4 h-4" /> Restore from Backup
+              </h3>
+              <input 
+                type="file" 
+                accept=".json" 
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const content = event.target?.result as string;
+                      const validation = validateJSON(content);
+                      if (!validation.valid) {
+                        toast({ 
+                          title: "Invalid JSON", 
+                          description: validation.error,
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      try {
+                        const data = validation.data;
+                        localStorage.setItem("stratiumex_data", JSON.stringify({
+                          contacts: data.contacts || [],
+                          blogPosts: data.posts || [],
+                          testimonials: data.testimonials || [],
+                          caseStudies: data.studies || [],
+                          courses: data.courses || [],
+                        }));
+                        toast({ title: "Data restored successfully. Refresh the page." });
+                        setShowBackupModal(false);
+                        setTimeout(() => window.location.reload(), 1500);
+                      } catch {
+                        toast({ 
+                          title: "Error", 
+                          description: "Failed to restore data",
+                          variant: "destructive"
+                        });
+                      }
+                    };
+                    reader.readAsText(file);
+                  }
+                }}
+                className="w-full border rounded p-2"
+                data-testid="input-restore-file"
+              />
+              <p className="text-xs text-muted-foreground">Select a .json backup file to restore</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
