@@ -15,6 +15,8 @@ import ProductDetail from "@/pages/ProductDetail";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function Router() {
   return (
