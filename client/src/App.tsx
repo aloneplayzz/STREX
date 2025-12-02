@@ -43,6 +43,8 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <Analytics />
+        <SpeedInsights />
       </TooltipProvider>
     </QueryClientProvider>
   );
