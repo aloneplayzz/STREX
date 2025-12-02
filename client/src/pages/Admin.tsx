@@ -909,7 +909,7 @@ export default function Admin() {
             <h1 className="text-2xl font-display font-bold">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">{user?.email || user?.user?.email || 'Admin'}</span>
+            <span className="text-sm text-muted-foreground">{(user as any)?.email || (user as any)?.user?.email || 'Admin'}</span>
             <Button variant="ghost" size="icon" onClick={() => setShowActivityLog(!showActivityLog)} title="Cmd+H" data-testid="button-activity-log">
               <History className="w-4 h-4" />
             </Button>

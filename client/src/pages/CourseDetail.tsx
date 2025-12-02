@@ -128,7 +128,7 @@ export default function CourseDetail() {
             >
               <div>
                 <Badge variant="secondary" className="mb-4">
-                  {course.level || "All Levels"}
+                  {(course as any).level || "All Levels"}
                 </Badge>
                 
                 <h1 
