@@ -81,26 +81,66 @@ function StatCard({
 function ContactsTab() {
   const { toast } = useToast();
   const { contacts, markRead } = useContacts();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const unreadCount = contacts.filter(c => !c.isRead).length;
+  const filteredContacts = contacts.filter(c =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.subject.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleExportContacts = () => {
+    const dataStr = JSON.stringify({ contacts, exportDate: new Date().toISOString() }, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `contacts-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Contacts exported successfully" });
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-display font-bold">Contact Submissions</h2>
-          <p className="text-muted-foreground">{unreadCount} unread messages</p>
+          <p className="text-muted-foreground">{unreadCount} unread • {filteredContacts.length} shown</p>
         </div>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleExportContacts}
+          data-testid="button-export-contacts"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Export
+        </Button>
+      </div>
+
+      <div className="flex gap-2">
+        <Input
+          placeholder="Search by name, email or subject..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          data-testid="input-search-contacts"
+          className="flex-1"
+        />
+        <Search className="w-5 h-5 text-muted-foreground absolute right-12 pointer-events-none" />
       </div>
 
       <div className="space-y-4">
-        {contacts.length === 0 ? (
+        {filteredContacts.length === 0 ? (
           <Card className="glass-strong border-white/10 p-12 text-center">
             <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No contact submissions yet.</p>
+            <p className="text-muted-foreground">
+              {searchTerm ? "No messages match your search." : "No contact submissions yet."}
+            </p>
           </Card>
         ) : (
-          contacts.map((contact) => (
+          filteredContacts.map((contact) => (
             <Card 
               key={contact.id} 
               className={`glass-strong border-white/10 p-6 ${!contact.isRead ? 'border-l-4 border-l-primary' : ''}`}
@@ -151,10 +191,36 @@ function ContactsTab() {
 function BlogTab() {
   const { toast } = useToast();
   const { posts, addPost, updatePost, deletePost } = useBlogPosts();
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [editingPost, setEditingPost] = useState<any>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "title">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const filteredPosts = posts
+    .filter(post =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      let compareValue = 0;
+      if (sortBy === "date") {
+        compareValue = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else {
+        compareValue = a.title.localeCompare(b.title);
+      }
+      return sortOrder === "asc" ? compareValue : -compareValue;
+    });
 
   const handleCreatePost = (data: any) => {
+    if (!data.title?.trim() || !data.content?.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Title and content are required",
+        variant: "destructive"
+      });
+      return;
+    }
     addPost({
       id: Date.now().toString(),
       title: data.title,
@@ -176,43 +242,98 @@ function BlogTab() {
     }
   };
 
-  const togglePublish = (post: BlogPost) => {
+  const togglePublish = (post: any) => {
     updatePost(post.id, { published: !post.published });
+  };
+
+  const handleExportPosts = () => {
+    const dataStr = JSON.stringify({ posts, exportDate: new Date().toISOString() }, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `blog-posts-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Blog posts exported successfully" });
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-display font-bold">Blog Posts</h2>
-          <p className="text-muted-foreground">{posts.length} total posts</p>
+          <p className="text-muted-foreground">{filteredPosts.length} of {posts.length} posts</p>
         </div>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-create-post">
-              <Plus className="w-4 h-4 mr-2" />
-              New Post
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Create Blog Post</DialogTitle>
-            </DialogHeader>
-            <BlogPostForm 
-              onSubmit={handleCreatePost} 
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPosts}
+            data-testid="button-export-posts"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+            <DialogTrigger asChild>
+              <Button data-testid="button-create-post">
+                <Plus className="w-4 h-4 mr-2" />
+                New Post
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create Blog Post</DialogTitle>
+              </DialogHeader>
+              <BlogPostForm 
+                onSubmit={handleCreatePost} 
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-2 items-center">
+          <Input
+            placeholder="Search posts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            data-testid="input-search-posts"
+            className="flex-1"
+          />
+          <select 
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as "date" | "title")}
+            className="px-3 py-2 rounded border border-input bg-background"
+            data-testid="select-sort-by"
+          >
+            <option value="date">Date</option>
+            <option value="title">Title</option>
+          </select>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+            data-testid="button-toggle-sort"
+            title={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
+          >
+            {sortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-4">
-        {posts.length === 0 ? (
+        {filteredPosts.length === 0 ? (
           <Card className="glass-strong border-white/10 p-12 text-center">
             <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No blog posts yet. Create your first post!</p>
+            <p className="text-muted-foreground">
+              {searchTerm ? "No posts match your search." : "No blog posts yet. Create your first post!"}
+            </p>
           </Card>
         ) : (
-          posts.map((post) => (
+          filteredPosts.map((post: any) => (
             <Card 
               key={post.id} 
               className="glass-strong border-white/10 p-6"
@@ -228,9 +349,13 @@ function BlogTab() {
                     <Badge variant="outline">{post.category}</Badge>
                   </div>
                   <p className="text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown date'}
-                  </p>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span>{post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Unknown date'}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {calculateReadingTime(post.content)} min read
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
@@ -302,7 +427,7 @@ function BlogPostForm({
   post, 
   onSubmit,
 }: { 
-  post?: BlogPost; 
+  post?: any; 
   onSubmit: (data: any) => void;
 }) {
   const [title, setTitle] = useState(post?.title || "");
@@ -382,7 +507,7 @@ function TestimonialsTab() {
     toast({ title: "Testimonial created successfully" });
   };
 
-  const toggleFeatured = (testimonial: Testimonial) => {
+  const toggleFeatured = (testimonial: any) => {
     update(testimonial.id, { featured: !testimonial.featured });
   };
 
@@ -738,7 +863,7 @@ export default function Admin() {
             <h1 className="text-2xl font-display font-bold">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user.email}</span>
+            <span className="text-sm text-muted-foreground">{user?.email || user?.user?.email || 'Admin'}</span>
             <Button variant="outline" size="sm" onClick={logout} data-testid="button-logout">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
