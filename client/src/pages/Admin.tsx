@@ -26,14 +26,12 @@ import {
   Clock,
   CheckCircle2,
   LogOut,
+  Download,
+  Search,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
-import type { 
-  Contact, 
-  BlogPost, 
-  Testimonial, 
-  CaseStudy, 
-  Course 
-} from "@shared/schema";
+import { calculateReadingTime, exportToJSON } from "@/utils/helpers";
 import {
   Dialog,
   DialogContent,
