@@ -21,9 +21,9 @@ const founders: Founder[] = [
     role: "CEO & Lead Developer",
     bio: "Full-stack developer with 8+ years of experience building scalable applications. Passionate about AI and automation technologies. Previously led engineering teams at multiple startups.",
     socials: {
-      linkedin: "#",
-      twitter: "#",
-      github: "#",
+      linkedin: "https://asura.stratiumex.com/",
+      twitter: "https://asura.stratiumex.com/",
+      github: "https://asura.stratiumex.com/",
     },
   },
   {
