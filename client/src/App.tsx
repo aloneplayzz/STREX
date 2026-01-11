@@ -45,6 +45,8 @@ function App() {
         <Toaster />
         <AdsenseBox />
         <Router />
+        <Analytics />
+        <SpeedInsights />
       </TooltipProvider>
     </QueryClientProvider>
   );
